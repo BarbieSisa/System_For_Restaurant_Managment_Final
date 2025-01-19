@@ -75,7 +75,7 @@ using namespace std;
             std::cout << "Opt for 9: If you want to see the turnover for the particular day." << endl;
             std::cout << "Opt for 10: If you want to see the turnover for a particular Date up to Now ." << endl;
             std::cout << "Opt for 11: If you want to add new MenuItem into the Restaurant Menu ." << endl;
-
+            std::cout << "Opt for 12: If you want to delete a paticular MenuItem in the Restaurant Menu ." << endl;
             std::cout << "Opt for 0: Quit the program." << endl;
 
             std::cout << "Enter your choice: ";
@@ -107,8 +107,12 @@ using namespace std;
             case 9:
                 SumPricesByDate();
             case 10:
+                SortOrdersByDate();
+            case 11:
                 CreateMenuItem();
                 break;
+            case 12:
+                DeleteMenuItem();
             case 0:
                 std::cout << "Exiting the program. Goodbye!\n";
                 break;
@@ -117,7 +121,7 @@ using namespace std;
                 break;
             }
 
-            std::cout << endl; // Add a line break for better readability
+            std::cout << endl; 
         } while (choice != 0);
 
 
@@ -132,36 +136,5 @@ int main() {
         WaiterUserRole();
    else if (UserRole == "Manager")
         ManagerUserRole(); 
-
-
-  //  CreateProduct();
-   // DeleteProduct();
-   // PrintProducts();
-    //UpdateProductQuantity();
-    //dateProductQuantityInMenuItem();
-   //reateProduct();
-   //eateMenuItem();
-   // PrintProducts();
-   //PrintMenuItems();
-   //CreateMenuItem();
-   //CreateOrder();
-   //PrintOrders();
-   //SortOrdersByMenuItemNameDescending();
-   // CreateOrder();
-   // CreateOrder();
-    //DeleteOrder();
-    // SortOrdersByMenuItemNameDescending();
-    //  PrintMenuItemOccurrences();
-  //SumPricesByDate();
-  //PrintPriceFromDate1();
-  //SortOrdersByDate();
-      //PrintPriceFromDate();
-    //  string result = GetLatterDate("27-04-2005", "27-11-2005");
-      //cout << result;
-     //LoadMenuItems();
-    // LoadProductsFromFile();
-     // UpdateProductQuantityInSpecificMenuItem();
-  //SubtractProductQuantityFromMenuItem();
-   //   SubtractProductQuantityFromMenuItemTest();
     return 0;
 }
