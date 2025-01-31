@@ -2,7 +2,6 @@
 #include <fstream>
 #include <string>
 #include <iostream>
-
 #include "menuItems.h"
 #include "products.h"
 #include "orders.h"
@@ -20,7 +19,6 @@ using namespace std;
             std::cout << "Opt for 6: If you want to see the number of MenuItems ordered." << endl;
             std::cout << "Opt for 7: If you want to see the turnover for the particular day." << endl;
             std::cout << "Opt for 0: Quit the program." << endl;
-
             std::cout << "Enter your choice: ";
             cin >> choice;
 
@@ -73,9 +71,10 @@ using namespace std;
             std::cout << "Opt for 7: If you want to delete a paticular Product in the Warehouse ." << endl;
             std::cout << "Opt for 8: If you want to add a new Product into the Warehouse ." << endl;
             std::cout << "Opt for 9: If you want to see the turnover for the particular day." << endl;
-            std::cout << "Opt for 10: If you want to see the turnover for a particular Date up to Now ." << endl;
-            std::cout << "Opt for 11: If you want to add new MenuItem into the Restaurant Menu ." << endl;
-            std::cout << "Opt for 12: If you want to delete a paticular MenuItem in the Restaurant Menu ." << endl;
+            std::cout << "Opt for 10: If you want to reset the turnover." << endl;
+            std::cout << "Opt for 11: If you want to see the turnover for a particular Date up to Now ." << endl;
+            std::cout << "Opt for 12: If you want to add new MenuItem into the Restaurant Menu ." << endl;
+            std::cout << "Opt for 14: If you want to delete a paticular MenuItem in the Restaurant Menu ." << endl;
             std::cout << "Opt for 0: Quit the program." << endl;
 
             std::cout << "Enter your choice: ";
@@ -101,18 +100,25 @@ using namespace std;
                 PrintProducts();
             case 7:
                 DeleteProduct();
+                break;
             case 8:
                 CreateProduct();
                 break;
             case 9:
                 SumPricesByDate();
+                break;
             case 10:
-                SortOrdersByDate();
+                SumPricesByDateAndReset();
+                break;
             case 11:
-                CreateMenuItem();
+                PrintPriceFromDate();
                 break;
             case 12:
+                CreateMenuItem();
+                break;
+            case 14:
                 DeleteMenuItem();
+                break;
             case 0:
                 std::cout << "Exiting the program. Goodbye!\n";
                 break;
