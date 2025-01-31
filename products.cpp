@@ -7,7 +7,6 @@
 using namespace std;
 const string filename = "products.txt";
 const int MAX_PRODUCTS1 = 100;
-vector<Product> productList;
 Product products1[100];  // Array of products, adjust size as needed
 int productCount1 = 0;
 
@@ -99,8 +98,6 @@ void DeleteProduct() {
     getline(cin, productName);
 
     bool productFound = false;
-
-    // Read from the original file and write to a temp file except the product to delete
     while (inFile >> ws && getline(inFile, product.name) &&
         inFile >> product.quantity >> product.QuantityInMenuItem) {
         if (product.name == productName) {
@@ -134,9 +131,6 @@ void DeleteProduct() {
         }
     }
 }
-
-
-
 
 void PrintProducts() {
     std::ifstream file("products.txt");
@@ -215,8 +209,6 @@ void UpdateProductQuantity() {
     }
 }
 
-
-
 void UpdateProductQuantityInMenuItem() {
     ifstream inFile("products.txt");
     ofstream outFile("temp.txt");
@@ -274,6 +266,4 @@ void UpdateProductQuantityInMenuItem() {
         remove("temp.txt");
     }
 }
-// Global vector to hold the products
 
-// Function to load products from file into the global products list

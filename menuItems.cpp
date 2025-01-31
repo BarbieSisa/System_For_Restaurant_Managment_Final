@@ -7,7 +7,6 @@ using namespace std;
 const int MAX_PRODUCTS = 100;
 const int MAX_MENU_ITEMS1 = 100;
 int menuItemCount = 0;
-
 int productCount = 0;
 Product products[MAX_PRODUCTS];
 
@@ -29,7 +28,7 @@ void LoadProductsFromFile() {
             index++;
         }
         else {
-            cout << "Error: File format incorrect for product at index " << index << ".\n";
+          //  cout << "Error: File format incorrect for product at index " << index << ".\n";
             break;
         }
     }
@@ -39,7 +38,7 @@ void LoadProductsFromFile() {
         std::cout << "No products loaded.\n";
     }
     else {
-        std::cout << "Loaded " << index << " products successfully.\n";
+       // std::cout << "Loaded " << index << " products successfully.\n";
     }
 }
 
@@ -92,90 +91,183 @@ void PrintMenuItems() {
     }
 
     int index = 0;
+    while (file) {
+        MenuItem menuItem;
 
-    while (index < MAX_MENU_ITEMS1 && std::getline(file, menuItems1[index].name)) {
-        if (file >> menuItems1[index].price) {
-            file.ignore(); 
-            if (file >> menuItems1[index].productCount) {
-                file.ignore(); 
-                for (int i = 0; i < menuItems1[index].productCount; ++i) {
-                    string productName;
-                    int quantity, quantityInMenuItem;
-                    if (std::getline(file, productName) && file >> quantity >> quantityInMenuItem) {
-                        file.ignore(); 
-                        menuItems1[index].products[i].name = productName;
-                        menuItems1[index].products[i].quantity = quantity;
-                        menuItems1[index].products[i].QuantityInMenuItem = quantityInMenuItem;
-                    }
-                    else {
-                        cout << "Error: File format incorrect for product at index "
-                            << i << " in menu item " << menuItems1[index].name << ".\n";
-                        break;
-                    }
-                }
-                index++; 
+        // Read menu item name
+        string line;
+        if (!getline(file, line)) break;
+        menuItem.name = trim1(line); // Trim whitespace
+
+        // Read price
+        if (getline(file, line)) {
+            line = trim1(line); // Trim whitespace
+            try {
+                menuItem.price = std::stod(line); // Convert string to double
             }
-            else {
-                cout << "Error: File format incorrect for product count in menu item "
-                    << menuItems1[index].name << ".\n";
+            catch (const std::exception&) {
+                cout << "Error: Incorrect format for price in menu item '" << menuItem.name << "'.\n";
                 break;
             }
         }
         else {
-            cout << "Error: File format incorrect for price in menu item "
-                << menuItems1[index].name << ".\n";
+            cout << "Error: Missing price for menu item '" << menuItem.name << "'.\n";
             break;
         }
+
+        // Read product count
+        if (getline(file, line)) {
+            line = trim1(line); // Trim whitespace
+            try {
+                menuItem.productCount = std::stoi(line); // Convert string to integer
+            }
+            catch (const std::exception&) {
+                cout << "Error: Incorrect format for product count in menu item '" << menuItem.name << "'.\n";
+                break;
+            }
+        }
+        else {
+            cout << "Error: Missing product count for menu item '" << menuItem.name << "'.\n";
+            break;
+        }
+
+        // Debug: Print product count
+        cout << "DEBUG: Menu Item '" << menuItem.name << "' has " << menuItem.productCount << " products.\n";
+
+        // Read product details
+        for (int i = 0; i < menuItem.productCount; ++i) {
+            string productName;
+            int quantity = 0, quantityInMenuItem = 0;
+
+            // Read product name
+            if (!getline(file, productName)) {
+                cout << "Error: Missing product name for product at index " << i
+                    << " in menu item '" << menuItem.name << "'.\n";
+                break;
+            }
+            productName = trim1(productName); // Trim whitespace
+
+            // Read quantity
+            if (getline(file, line)) {
+                line = trim1(line); // Trim whitespace
+                try {
+                    quantity = std::stoi(line); // Convert string to integer
+                }
+                catch (const std::exception&) {
+                    cout << "Error: Incorrect format for quantity at index " << i
+                        << " in menu item '" << menuItem.name << "'.\n";
+                    break;
+                }
+            }
+            else {
+                cout << "Error: Missing quantity for product at index " << i
+                    << " in menu item '" << menuItem.name << "'.\n";
+                break;
+            }
+
+            // Read QuantityInMenuItem
+            if (getline(file, line)) {
+                line = trim1(line); // Trim whitespace
+                try {
+                    quantityInMenuItem = std::stoi(line); // Convert string to integer
+                }
+                catch (const std::exception&) {
+                    cout << "Error: Incorrect format for QuantityInMenuItem at index " << i
+                        << " in menu item '" << menuItem.name << "'.\n";
+                    break;
+                }
+            }
+            else {
+                cout << "Error: Missing QuantityInMenuItem for product at index " << i
+                    << " in menu item '" << menuItem.name << "'.\n";
+                break;
+            }
+
+            // Assign product details
+            menuItem.products[i].name = productName;
+            menuItem.products[i].quantity = quantity;
+            menuItem.products[i].QuantityInMenuItem = quantityInMenuItem;
+
+            // Debug: Print product details
+            cout << "DEBUG: Product[" << i << "] - Name: " << productName
+                << ", Quantity: " << quantity
+                << ", QuantityInMenuItem: " << quantityInMenuItem << "\n";
+        }
+
+        // Print menu item details
+        cout << "Menu Item: " << menuItem.name << "\n";
+        cout << "Price: $" << menuItem.price << "\n";
+        cout << "Products:\n";
+        for (int i = 0; i < menuItem.productCount; ++i) {
+            const Product& product = menuItem.products[i];
+            cout << "  - Product Name: " << product.name << "\n";
+            cout << "    Quantity: " << product.quantity << ", ";
+            cout << "Quantity in Menu Item: " << product.QuantityInMenuItem << "\n";
+        }
+        cout << "-------------------------------\n";
+
+        index++; // Increment the index for menu items
     }
 
     file.close();
 
     if (index == 0) {
-        std::cout << "No menu items loaded.\n";
+        cout << "No menu items loaded.\n";
     }
     else {
-        std::cout << "Loaded " << index << " menu items successfully.\n";
-    }
-    for (int i = 0; i < index; ++i) {
-        std::cout << "Menu Item: " << menuItems1[i].name << "\n";
-        std::cout << "Price: $" << menuItems1[i].price << "\n";
-        std::cout << "Products:\n";
-        for (int j = 0; j < menuItems1[i].productCount; ++j) {
-            std::cout << "  - " << menuItems1[i].products[j].name
-                << " (Quantity: " << menuItems1[i].products[j].quantity
-                << ", QuantityInMenuItem: " << menuItems1[i].products[j].QuantityInMenuItem << ")\n";
-        }
-        std::cout << "-----------------------------\n";
+        cout << "Loaded " << index << " menu items successfully.\n";
     }
 }
 void CreateMenuItem() {
     LoadProductsFromFile();
     MenuItem menuItem;
     cout << "Enter Menu Item Name: ";
+    cin.ignore();  // Clears the leftover newline from previous input
     getline(cin, menuItem.name);
 
     cout << "Enter Menu Item Price: ";
-    cin >> menuItem.price;
+    while (!(cin >> menuItem.price)) { // Validate price input
+        cout << "Invalid price. Please enter a numeric value: ";
+        cin.clear();
+        while (cin.get() != '\n'); // Manually clear input buffer
+    }
+    cin.ignore(); // Ensure no extra newline remains
 
-    cout << "Enter the number of products used in this Menu Item: ";
-    cin >> menuItem.productCount;
-    cin.ignore(); 
+    cout << "Enter the number of products used in this Menu Item (Max 100): ";
+    while (!(cin >> menuItem.productCount) || menuItem.productCount <= 0 || menuItem.productCount > 100) {
+        cout << "Invalid number. Please enter a positive integer (1-100): ";
+        cin.clear();
+        while (cin.get() != '\n'); // Manually clear input buffer
+    }
+    cin.ignore(); // Ensure no extra newline remains
+
     for (int i = 0; i < menuItem.productCount; ++i) {
         cout << "Enter Product " << i + 1 << " Name: ";
         getline(cin, menuItem.products[i].name);
 
         cout << "Enter Quantity of " << menuItem.products[i].name << ": ";
-        cin >> menuItem.products[i].quantity;
+        while (!(cin >> menuItem.products[i].quantity)) {
+            cout << "Invalid input. Enter a numeric quantity: ";
+            cin.clear();
+            while (cin.get() != '\n'); // Manually clear input buffer
+        }
+        cin.ignore(); // Ensure no extra newline remains
 
         cout << "Enter Quantity In Menu Item for " << menuItem.products[i].name << ": ";
-        cin >> menuItem.products[i].QuantityInMenuItem;
-        cin.ignore(); 
+        while (!(cin >> menuItem.products[i].QuantityInMenuItem)) {
+            cout << "Invalid input. Enter a numeric quantity: ";
+            cin.clear();
+            while (cin.get() != '\n'); // Manually clear input buffer
+        }
+        cin.ignore(); // Ensure no extra newline remains
     }
-    ofstream outFile("menuItems.txt", ios::app); 
-    if (!outFile.is_open()) {
-        cout << "Error: Unable to open menuItems.txt for writing.\n";
+
+    ofstream outFile("menuItems.txt", ios::app);
+    if (!outFile) {
+        cerr << "Error: Unable to open menuItems.txt for writing.\n";
         return;
     }
+
     outFile << menuItem.name << "\n";
     outFile << menuItem.price << "\n";
     outFile << menuItem.productCount << "\n";
@@ -246,17 +338,17 @@ void LoadProductsFromFileSub() {
     while (i < MAX_PRODUCTS && std::getline(file, name)) {
         name = trim1(name);
         if (name.empty()) {
-            std::cout << "Error: Found empty product name at index " << i << ". Skipping...\n";
+           // std::cout << "Error: Found empty product name at index " << i << ". Skipping...\n";
             continue;
         }
         if (!(file >> quantity)) {
-            std::cout << "Error: Incorrect format for quantity at index " << i << ".\n";
+         //   std::cout << "Error: Incorrect format for quantity at index " << i << ".\n";
             file.clear(); 
             file.ignore(std::string::npos, '\n');  
             continue;
         }
         if (!(file >> quantityInMenuItem)) {
-            std::cout << "Error: Incorrect format for QuantityInMenuItem at index " << i << ".\n";
+          //  std::cout << "Error: Incorrect format for QuantityInMenuItem at index " << i << ".\n";
             file.clear(); 
             file.ignore(std::string::npos, '\n');  
             continue;
@@ -266,10 +358,10 @@ void LoadProductsFromFileSub() {
         products[i].name = name;
         products[i].quantity = quantity;
         products[i].QuantityInMenuItem = quantityInMenuItem;
-        std::cout << "Loaded Product: " << products[i].name
+       /*std::cout << "Loaded Product: " << products[i].name
             << ", Quantity: " << products[i].quantity
             << ", QuantityInMenuItem: " << products[i].QuantityInMenuItem << "\n";
-
+*/
         i++; 
     }
 
@@ -323,9 +415,9 @@ void LoadMenuItems() {
             menuItem.products[i].quantity = quantity;
             menuItem.products[i].QuantityInMenuItem = quantityInMenuItem;
 
-            std::cout << "Loaded product " << productName << " with quantity " << quantity
+          /*  std::cout << "Loaded product " << productName << " with quantity " << quantity
                 << " and QuantityInMenuItem " << quantityInMenuItem << "\n";
-        }
+     */   }
         menuItemCount++;
     }
 
@@ -482,7 +574,7 @@ void DeleteMenuItem() {
     ifstream inFile("menuItems.txt");
     ofstream outFile("temp.txt");
 
-    if (!inFile.is_open() || !outFile.is_open()) {
+    if (!inFile || !outFile) {
         cout << "Error: Unable to open file.\n";
         return;
     }
@@ -496,25 +588,53 @@ void DeleteMenuItem() {
 
     bool menuItemFound = false;
 
-    while (inFile >> ws && getline(inFile, menuItem.name) &&
-        inFile >> menuItem.price >> menuItem.productCount) {
-        for (int i = 0; i < menuItem.productCount; ++i) {
-            inFile >> menuItem.products[i].name >> menuItem.products[i].quantity >> menuItem.products[i].QuantityInMenuItem;
+    while (!inFile.eof()) {
+        // Read menu item name
+        getline(inFile, menuItem.name);
+        if (menuItem.name.empty()) continue; // Skip empty lines
+
+        // Read price
+        inFile >> menuItem.price;
+        if (inFile.fail()) {
+            cout << "Error: Invalid price format for menu item '" << menuItem.name << "'. Skipping...\n";
+            inFile.clear();
+            inFile.ignore(1000, '\n');
+            continue;
         }
 
+        // Read product count
+        inFile >> menuItem.productCount;
+        if (inFile.fail() || menuItem.productCount < 0 || menuItem.productCount > 100) {
+            cout << "Error: Incorrect product count for menu item '" << menuItem.name << "'. Skipping...\n";
+            inFile.clear();
+            inFile.ignore(1000, '\n');
+            continue;
+        }
+
+        inFile.ignore(); // Clear newline before reading products
+
+        // Read product details
+        for (int i = 0; i < menuItem.productCount; i++) {
+            getline(inFile, menuItem.products[i].name);
+            inFile >> menuItem.products[i].quantity >> menuItem.products[i].QuantityInMenuItem;
+            inFile.ignore(); // Clear newline
+        }
+
+        // If menu item matches the one to delete, skip writing it
         if (menuItem.name == menuItemName) {
             menuItemFound = true;
             continue;
         }
 
-        outFile << menuItem.name << "\n"
-            << menuItem.price << "\n"
-            << menuItem.productCount << "\n";
+        // Write the menu item to temp file
+        outFile << menuItem.name << "\n";
+        outFile << menuItem.price << "\n";
+        outFile << menuItem.productCount << "\n";
 
         for (int i = 0; i < menuItem.productCount; ++i) {
-            outFile << menuItem.products[i].name << " "
-                << menuItem.products[i].quantity << " "
-                << menuItem.products[i].QuantityInMenuItem << "\n";
+            outFile << menuItem.products[i].name << "\n";
+            outFile << menuItem.products[i].quantity << "\n";
+            outFile << menuItem.products[i].QuantityInMenuItem << "\n";
         }
     }
 

@@ -1,0 +1,12 @@
+Apple
+909
+0
+Banana
+946
+3
+Orange
+995
+2
+Strawberry
+969
+4

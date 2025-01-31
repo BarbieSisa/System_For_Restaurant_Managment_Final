@@ -9,6 +9,7 @@
 const int MAX_MENU_ITEMS = 100;
 const int MAX_ORDERS = 100;
 const int MAX_DATES = 100;
+const int MAX_PRODUCTS = 100;
 int ordersCount = 0;
 int menuItemsCount = 0;
 
@@ -25,13 +26,13 @@ void DeleteOrder() {
     ofstream outFile("temp.txt");
 
     if (!inFile.is_open() || !outFile.is_open()) {
-        cout << "Error: Unable to open file.\n";
+        std::cout << "Error: Unable to open file.\n";
         return;
     }
 
     int orderIDToDelete;
-    cout << "Enter Order ID to delete: ";
-    cin >> orderIDToDelete;
+    std::cout << "Enter Order ID to delete: ";
+    std::cin >> orderIDToDelete;
 
     bool orderFound = false;
 
@@ -83,24 +84,24 @@ void DeleteOrder() {
     // Replace the original file if the order was found
     if (orderFound) {
         if (remove("orders.txt") != 0) {
-            cout << "Error: Could not delete the original file.\n";
+            std::cout << "Error: Could not delete the original file.\n";
             return;
         }
         if (rename("temp.txt", "orders.txt") != 0) {
-            cout << "Error: Could not rename temp file.\n";
+            std::cout << "Error: Could not rename temp file.\n";
             return;
         }
-        cout << "Order deleted successfully.\n";
+        std::cout << "Order deleted successfully.\n";
     }
     else {
-        cout << "Order ID " << orderIDToDelete << " not found.\n";
+        std::cout << "Order ID " << orderIDToDelete << " not found.\n";
         remove("temp.txt");
     }
 }
 void CreateOrder() {
     ifstream file("menuItems.txt");
     if (!file.is_open()) {
-        cout << "Error: Unable to open menu items file.\n";
+        std::cout << "Error: Unable to open menu items file.\n";
         return;
     }
 
@@ -130,30 +131,31 @@ void CreateOrder() {
                         menuItems[index].products[i].QuantityInMenuItem = quantityInMenuItem;
                     }
                     else {
-                        cout << "Error: File format incorrect for product at index "
+                      /* cout << "Error: File format incorrect for product at index "
                             << i << " in menu item " << menuItems[index].name << ".\n";
-                        break;
+                        break;*/ 
                     }
                 }
                 index++; // Move to the next menu item
             }
             else {
+                /*
                 cout << "Error: File format incorrect for product count in menu item "
                     << menuItems[index].name << ".\n";
-                break;
+                break;*/ 
             }
         }
-        else {
+        else {/*
             cout << "Error: File format incorrect for price in menu item "
                 << menuItems[index].name << ".\n";
-            break;
+            break;*/ 
         }
     }
 
     file.close();
 
     if (index == 0) {
-        cout << "No menu items loaded.\n";
+        std::cout << "No menu items loaded.\n";
     }
     else {
       //  cout << "Loaded " << index << " menu items successfully.\n";
@@ -161,15 +163,15 @@ void CreateOrder() {
     Order newOrder;
 
     // Input Order details
-    cout << "Enter Order ID: ";
-    cin >> newOrder.ID;
-    cin.ignore(); // Clear input buffer
+    std::cout << "Enter Order ID: ";
+    std::cin >> newOrder.ID;
+    std::cin.ignore(); // Clear input buffer
 
-    cout << "Enter Order Date: ";
-    getline(cin, newOrder.date);
+    std::cout << "Enter Order Date: ";
+    std::getline(std::cin, newOrder.date);
 
-    cout << "Enter Menu Item Name: ";
-    getline(cin, newOrder.menuItem.name);
+    std::cout << "Enter Menu Item Name: ";
+    std::getline(std::cin, newOrder.menuItem.name);
 
     // Check if the menu item exists in the loaded menu items
     bool menuItemExists = false;
@@ -199,14 +201,14 @@ void CreateOrder() {
     }
 
     if (!menuItemExists) {
-        cout << "Error: Menu Item \"" << newOrder.menuItem.name << "\" does not exist.\n";
+        std::cout << "Error: Menu Item \"" << newOrder.menuItem.name << "\" does not exist.\n";
         return;
     }
 
     // Write order to file
     ofstream outFile("orders.txt", ios::app);
     if (!outFile.is_open()) {
-        cout << "Error: Could not open orders file for writing.\n";
+        std::cout << "Error: Could not open orders file for writing.\n";
         return;
     }
 
@@ -225,7 +227,7 @@ void CreateOrder() {
     }
 
     outFile.close();
-    cout << "Order created successfully.\n";
+    std::cout << "Order created successfully.\n";
 
 }
 
@@ -233,7 +235,7 @@ void LoadOrders() {
 
     ifstream file("orders.txt");
     if (!file.is_open()) {
-        cout << "Error: Unable to open orders file.\n";
+        std::cout << "Error: Unable to open orders file.\n";
         return;
     }
 
@@ -259,7 +261,7 @@ void LoadOrders() {
         }
 
         if (!found) {
-            cout << "Error: Menu item '" << menuItemName << "' not found for order ID " << orders[index].ID << ". Skipping this order.\n";
+            std::cout << "Error: Menu item '" << menuItemName << "' not found for order ID " << orders[index].ID << ". Skipping this order.\n";
             continue; // Skip to the next order
         }
 
@@ -292,17 +294,17 @@ void LoadOrders() {
     file.close();
 
     if (ordersCount == 0) {
-        cout << "No valid orders loaded.\n";
+        std::cout << "No valid orders loaded.\n";
     }
     else {
-        cout << "Loaded " << ordersCount << " orders successfully.\n";
+        std::cout << "Loaded " << ordersCount << " orders successfully.\n";
     }
 }
 
 void PrintOrders() {
     ifstream file("orders.txt");
     if (!file.is_open()) {
-        cout << "Error: Unable to open orders file.\n";
+        std::cout << "Error: Unable to open orders file.\n";
         return;
     }
 
@@ -345,25 +347,25 @@ void PrintOrders() {
                 order.menuItem.products[i].QuantityInMenuItem = quantityInMenuItem;
             }
             else {
-                cout << "Error: File format incorrect for product at index "
+                std::cout << "Error: File format incorrect for product at index "
                     << i << " in order ID " << order.ID << ".\n";
                 break;
             }
         }
 
         // Print order details
-        cout << "Order ID: " << order.ID << "\n";
-        cout << "Order Date: " << order.date << "\n";
-        cout << "Menu Item: " << order.menuItem.name << "\n";
-        cout << "Price: $" << order.menuItem.price << "\n";
-        cout << "Products in Menu Item:\n";
+        std::cout << "Order ID: " << order.ID << "\n";
+        std::cout << "Order Date: " << order.date << "\n";
+        std::cout << "Menu Item: " << order.menuItem.name << "\n";
+        std::cout << "Price: $" << order.menuItem.price << "\n";
+        std::cout << "Products in Menu Item:\n";
         for (int i = 0; i < order.menuItem.productCount; ++i) {
             const Product& product = order.menuItem.products[i];
-            cout << "  - Product Name: " << product.name << "\n";
-            cout << "    Quantity: " << product.quantity << ", ";
-            cout << "Quantity in Menu Item: " << product.QuantityInMenuItem << "\n";
+            std::cout << "  - Product Name: " << product.name << "\n";
+            std::cout << "    Quantity: " << product.quantity << ", ";
+            std::cout << "Quantity in Menu Item: " << product.QuantityInMenuItem << "\n";
         }
-        cout << "-------------------------------\n";
+        std::cout << "-------------------------------\n";
 
         index++; // Increment the index for orders
     }
@@ -374,7 +376,7 @@ void PrintOrders() {
 void SortOrdersByMenuItemNameDescending() {
     ifstream file("orders.txt");
     if (!file.is_open()) {
-        cout << "Error: Unable to open orders file.\n";
+        std::cout << "Error: Unable to open orders file.\n";
         return;
     }
 
@@ -421,8 +423,8 @@ void SortOrdersByMenuItemNameDescending() {
                 order.menuItem.products[i].QuantityInMenuItem = quantityInMenuItem;
             }
             else {
-                cout << "Error: File format incorrect for product at index "
-                    << i << " in order ID " << order.ID << ".\n";
+             //   std::cout << "Error: File format incorrect for product at index "
+                 //   << i << " in order ID " << order.ID << ".\n";
                 break;
             }
         }
@@ -433,7 +435,7 @@ void SortOrdersByMenuItemNameDescending() {
     file.close();
 
     if (ordersCount == 0) {
-        cout << "No orders to display.\n";
+        std::cout << "No orders to display.\n";
         return;
     }
 
@@ -448,25 +450,25 @@ void SortOrdersByMenuItemNameDescending() {
 
     // Print sorted orders
     for (int i = 0; i < ordersCount; ++i) {
-        cout << "Order ID: " << orders[i].ID << "\n";
-        cout << "Order Date: " << orders[i].date << "\n";
-        cout << "Menu Item: " << orders[i].menuItem.name << "\n";
-        cout << "Price: $" << orders[i].menuItem.price << "\n";
-        cout << "Products in Menu Item:\n";
+        std::cout << "Order ID: " << orders[i].ID << "\n";
+        std::cout << "Order Date: " << orders[i].date << "\n";
+        std::cout << "Menu Item: " << orders[i].menuItem.name << "\n";
+        std::cout << "Price: $" << orders[i].menuItem.price << "\n";
+        std::cout << "Products in Menu Item:\n";
         for (int j = 0; j < orders[i].menuItem.productCount; ++j) {
             const Product& product = orders[i].menuItem.products[j];
-            cout << "  - Product Name: " << product.name << "\n";
-            cout << "    Quantity: " << product.quantity << ", ";
-            cout << "Quantity in Menu Item: " << product.QuantityInMenuItem << "\n";
+            std::cout << "  - Product Name: " << product.name << "\n";
+            std::cout << "    Quantity: " << product.quantity << ", ";
+            std::cout << "Quantity in Menu Item: " << product.QuantityInMenuItem << "\n";
         }
-        cout << "-------------------------------\n";
+        std::cout << "-------------------------------\n";
     }
 }
 
 void PrintMenuItemOccurrences() {
     ifstream file("orders.txt");
     if (!file.is_open()) {
-        cout << "Error: Unable to open orders file.\n";
+        std::cout << "Error: Unable to open orders file.\n";
         return;
     }
 
@@ -515,7 +517,7 @@ void PrintMenuItemOccurrences() {
                 order.menuItem.products[i].QuantityInMenuItem = quantityInMenuItem;
             }
             else {
-                cout << "Error: File format incorrect for product at index "
+                std::cout << "Error: File format incorrect for product at index "
                     << i << " in order ID " << order.ID << ".\n";
                 break;
             }
@@ -545,12 +547,12 @@ void PrintMenuItemOccurrences() {
 
     // Print the counts of each menu item
     if (uniqueMenuItemCount == 0) {
-        cout << "No menu items found in the orders.\n";
+        std::cout << "No menu items found in the orders.\n";
     }
     else {
-        cout << "Menu items occurrences in the orders:\n";
+        std::cout << "Menu items occurrences in the orders:\n";
         for (int i = 0; i < uniqueMenuItemCount; ++i) {
-            cout << "Menu Item: " << menuItems[i] << " - " << itemCount[i] << " time(s)\n";
+            std::cout << "Menu Item: " << menuItems[i] << " - " << itemCount[i] << " time(s)\n";
         }
     }
 }
@@ -560,7 +562,7 @@ void PrintMenuItemOccurrences() {
 void SumPricesByDate() {
     ifstream file("orders.txt");
     if (!file.is_open()) {
-        cout << "Error: Unable to open orders file.\n";
+        std::cout << "Error: Unable to open orders file.\n";
         return;
     }
 
@@ -605,7 +607,7 @@ void SumPricesByDate() {
                 order.menuItem.products[i].QuantityInMenuItem = quantityInMenuItem;
             }
             else {
-                cout << "Error: File format incorrect for product at index "
+                std::cout << "Error: File format incorrect for product at index "
                     << i << " in order ID " << order.ID << ".\n";
                 break;
             }
@@ -634,31 +636,131 @@ void SumPricesByDate() {
 
     file.close();
     string inputDate;
-    cout << "Enter the date (in format DD-MM-YYYY): ";
-    cin >> inputDate;
+    std::cout << "Enter the date (in format DD-MM-YYYY): ";
+    std::cin >> inputDate;
     bool found = false;
     // Print the total price sum for each date
     if (dateCount == 0) {
-        cout << "No orders found.\n";
+        std::cout << "No orders found.\n";
     }
     else {
-        cout << "Total prices by date:\n";
+        std::cout << "Total prices by date:\n";
         for (int i = 0; i < dateCount; ++i) {
             if (dates[i] == inputDate) {
-                cout << "Date: " << dates[i] << " - Total Price: $" << priceSum[i] << "\n";
+                std::cout << "Date: " << dates[i] << " - Total Price: $" << priceSum[i] << "\n";
                 found = true;
                 break;
             }
         }
         if (!found) {
-            cout << "No orders found for the date " << inputDate << ".\n";
+            std::cout << "No orders found for the date " << inputDate << ".\n";
         }
     }
 }
+void SumPricesByDateAndReset() {
+    ifstream file("orders.txt");
+    if (!file.is_open()) {
+        std::cout << "Error: Unable to open orders file.\n";
+        return;
+    }
+
+    while (file) {
+        if (ordersCount >= MAX_ORDERS) break;
+
+        Order order;
+
+        // Read order ID
+        if (!(file >> order.ID)) break;
+        file.ignore();  // Ignore the newline after order ID
+
+        // Read order date
+        getline(file, order.date);  // Read the full date line
+        if (order.date.empty()) continue;
+
+        // Read menu item name
+        string menuItemName;
+        getline(file, menuItemName);  // Read the menu item name
+        order.menuItem.name = menuItemName;
+
+        // Read price
+        if (!(file >> order.menuItem.price)) break;
+        file.ignore(); // Ignore newline after price
+
+        // Read number of products in menu item
+        if (!(file >> order.menuItem.productCount)) break;
+        file.ignore();  // Ignore newline after product count
+
+        // Read product details
+        for (int i = 0; i < order.menuItem.productCount; ++i) {
+            string productName;
+            int quantity, quantityInMenuItem;
+
+            // Read product details
+            if (getline(file, productName) && file >> quantity >> quantityInMenuItem) {
+                file.ignore();  // Ignore the newline character after product details
+
+                // Assign product details
+                order.menuItem.products[i].name = productName;
+                order.menuItem.products[i].quantity = quantity;
+                order.menuItem.products[i].QuantityInMenuItem = quantityInMenuItem;
+            }
+            else {
+                std::cout << "Error: File format incorrect for product at index "
+                    << i << " in order ID " << order.ID << ".\n";
+                break;
+            }
+        }
+
+        // Find the index of the date in the dates array
+        bool found = false;
+        for (int i = 0; i < dateCount; ++i) {
+            if (dates[i] == order.date) {
+                // Add the price to the corresponding date
+                priceSum[i] += order.menuItem.price;
+                found = true;
+                break;
+            }
+        }
+
+        // If the date is not found, add it to the dates array
+        if (!found && dateCount < MAX_DATES) {
+            dates[dateCount] = order.date;
+            priceSum[dateCount] = order.menuItem.price;
+            dateCount++;
+        }
+
+        orders[ordersCount++] = order;  // Store the order and increment the orders count
+    }
+
+    file.close();
+    string inputDate;
+    std::cout << "Enter the date (in format DD-MM-YYYY): ";
+    std::cin >> inputDate;
+    bool found = false;
+    // Print the total price sum for each date
+    if (dateCount == 0) {
+        std::cout << "No orders found.\n";
+    }
+    else {
+        std::cout << "Total prices by date:\n";
+        for (int i = 0; i < dateCount; ++i) {
+            if (dates[i] == inputDate) {
+                priceSum[i] = 0;
+                std::cout << "Date: " << dates[i] << " - Reset Turnover: $" << priceSum[i] << "\n";
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            std::cout << "No orders found for the date " << inputDate << ".\n";
+        }
+    }
+}
+
 double CalculateSumForDate(const string& inputDate) {
     ifstream file("orders.txt");
     if (!file.is_open()) {
-        cout << "Error: Unable to open orders file.\n";
+        std::cout << "Error: Unable to open orders file.\n";
         return -1.0; // Return -1 to indicate an error
     }
 
@@ -703,8 +805,8 @@ double CalculateSumForDate(const string& inputDate) {
                 order.menuItem.products[i].QuantityInMenuItem = quantityInMenuItem;
             }
             else {
-                cout << "Error: File format incorrect for product at index "
-                    << i << " in order ID " << order.ID << ".\n";
+               // std::cout << "Error: File format incorrect for product at index "
+                 //   << i << " in order ID " << order.ID << ".\n";
                 break;
             }
         }
@@ -804,7 +906,7 @@ string GetLatterDate(const string& date1, const string& date2) {
 void SortOrdersByDate() {
     ifstream file("orders.txt");
     if (!file.is_open()) {
-        cout << "Error: Unable to open orders file.\n";
+        std::cout << "Error: Unable to open orders file.\n";
         return;
     }
 
@@ -850,7 +952,7 @@ void SortOrdersByDate() {
                 order.menuItem.products[i].QuantityInMenuItem = quantityInMenuItem;
             }
             else {
-                cout << "Error: File format incorrect for product at index "
+                std::cout << "Error: File format incorrect for product at index "
                     << i << " in order ID " << order.ID << ".\n";
                 break;
             }
@@ -862,7 +964,7 @@ void SortOrdersByDate() {
     file.close();
 
     if (ordersCount == 0) {
-        cout << "No orders to sort.\n";
+        std::cout << "No orders to sort.\n";
         return;
     }
 
@@ -885,14 +987,70 @@ void SortOrdersByDate() {
             << orders[i].menuItem.price << "\n";
     }*/
 }
-void PrintPriceFromDate1() {
+
+
+// Function to find the closest date to the input date
+int dateToDays(const string& date) {
+    int day = 0, month = 0, year = 0;
+    char delimiter;
+
+    size_t firstDelim = date.find('/');
+    size_t secondDelim = date.find('/', firstDelim + 1);
+
+    // Parse day, month, year manually using substr and stoi
+    day = stoi(date.substr(0, firstDelim));
+    month = stoi(date.substr(firstDelim + 1, secondDelim - firstDelim - 1));
+    year = stoi(date.substr(secondDelim + 1));
+
+    // Days per month for non-leap years
+    int daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+    // Calculate total days since year 0
+    int totalDays = year * 365 + year / 4 - year / 100 + year / 400; // Add leap years
+    for (int i = 0; i < month - 1; ++i) {
+        totalDays += daysInMonth[i];
+    }
+    totalDays += day;
+
+    // Handle leap year adjustment for dates after February
+    if (month > 2 && (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0))) {
+        totalDays++;
+    }
+
+    return totalDays;
+}
+
+// Function to find the closest date to the input date
+string findClosestDate(const string& inputDate) {
+    int inputDays = dateToDays(inputDate);
+    if (inputDays == -1) return "Invalid Date Format";
+
+    int closestDifference = INT_MAX;
+    string closestDate = "";
+
+    for (int i = 0; i < MAX_ORDERS; i++) {  // Iterate over orders array
+        int orderDays = dateToDays(orders[i].date);
+        if (orderDays == -1) continue;
+
+        int difference = abs(orderDays - inputDays);
+        if (difference < closestDifference) {
+            closestDifference = difference;
+            closestDate = orders[i].date;
+        }
+    }
+    return closestDate.empty() ? "No matching date found" : closestDate;
+}
+
+
+
+void PrintPriceFromDate() {
     ifstream file("orders.txt");
     if (!file.is_open()) {
-        cout << "Error: Unable to open orders file.\n";
+        std::cout << "Error: Unable to open orders file.\n";
         return;
     }
 
-    dateCount = 0;
+    ordersCount = 0;
 
     while (file) {
         Order order;
@@ -900,139 +1058,62 @@ void PrintPriceFromDate1() {
         if (!(file >> order.ID)) break;
         file.ignore();  // Ignore newline after order ID
 
-        // Read order date and trim any surrounding whitespace
+        // Read order date
         getline(file, order.date);
         order.date = trim(order.date);
 
         if (order.date.empty()) continue;
 
-        string menuItemName;
-        getline(file, menuItemName);
-        order.menuItem.name = menuItemName;
-
+        // Read menu item details
+        getline(file, order.menuItem.name);
         if (!(file >> order.menuItem.price)) break;
-        file.ignore(); // Ignore newline after price
+        file.ignore();
 
         if (!(file >> order.menuItem.productCount)) break;
-        file.ignore(); // Ignore newline after product count
+        file.ignore();
 
-        // Read product details
+        // Read products
         for (int i = 0; i < order.menuItem.productCount; ++i) {
-            string productName;
-            int quantity, quantityInMenuItem;
-
-            if (getline(file, productName) && file >> quantity >> quantityInMenuItem) {
-                file.ignore();  // Ignore the newline character after product details
-
-                order.menuItem.products[i].name = productName;
-                order.menuItem.products[i].quantity = quantity;
-                order.menuItem.products[i].QuantityInMenuItem = quantityInMenuItem;
-            }
-            else {
-                cout << "Error: File format incorrect for product at index "
-                    << i << " in order ID " << order.ID << ".\n";
-                break;
-            }
+            if (i >= MAX_PRODUCTS) break;  // Ensure we do not exceed the array size
+            getline(file, order.menuItem.products[i].name);
+            file >> order.menuItem.products[i].quantity;
+            file >> order.menuItem.products[i].QuantityInMenuItem;
+            file.ignore();
         }
 
-        bool found = false;
-        for (int i = 0; i < dateCount; ++i) {
-            if (dates[i] == order.date) {
-                priceSum[i] += order.menuItem.price;
-                found = true;
-                break;
-            }
-        }
-
-        if (!found && dateCount < MAX_DATES) {
-            dates[dateCount] = order.date;
-            priceSum[dateCount] = order.menuItem.price;
-            dateCount++;
-        }
-
-        orders[ordersCount++] = order;
+        orders[ordersCount++] = order;  // Store the order
     }
 
     file.close();
-    SortOrdersByDate();
 
     if (ordersCount == 0) {
-        cout << "No orders available to process.\n";
+        std::cout << "No orders available to process.\n";
         return;
     }
 
-    // Prompt the user to input a date
     string inputDate;
-    cout << "Enter the date (in format DD-MM-YYYY): ";
-    cin >> inputDate;
+    std::cout << "Enter the date (in format DD/MM/YYYY): ";
+    std::cin >> inputDate;
+    inputDate = trim(inputDate);
+    if (inputDate.empty()) {
+        std::cout << "No matching or closest date found.\n";
+        return;
+    }
 
-    inputDate = trim(inputDate); // Trim any extra spaces from the input date
+    std::cout << "Sums from " << inputDate << " onwards:\n";
 
-    bool foundDate = false;
-
-    // Process sorted orders
-    cout << "Sums from " << inputDate << " onwards:\n";
     double cumulativeSum = 0.0;
-
-    std::string printedDates[MAX_DATES]; // Array to track printed dates
-    int printedDateCount = 0;            // Counter for printed dates
-
     for (int i = 0; i < ordersCount; ++i) {
-        // Check if the order's date is the same or later than the input date
         if (GetLatterDate(orders[i].date, inputDate) == orders[i].date) {
-            foundDate = true;
-
-            // Check if this date has already been printed
-            bool alreadyPrinted = false;
-            for (int j = 0; j < printedDateCount; ++j) {
-                if (printedDates[j] == orders[i].date) {
-                    alreadyPrinted = true;
-                    break;
-                }
-            }
-
-            if (!alreadyPrinted) {
-                // Add the date to the printedDates array
-                if (printedDateCount < MAX_DATES) {
-                    printedDates[printedDateCount++] = orders[i].date;
-                }
-
-                // Print the date and total price for it
-                cout << "Date: " << orders[i].date
-                    << " - Total Price: $" << CalculateSumForDate(orders[i].date) << "\n";
-            }
-
-            // Add the order's price to the cumulative sum
+            std::cout << "Date: " << orders[i].date
+                << " - Total Price: $" << CalculateSumForDate(orders[i].date) << "\n";
             cumulativeSum += orders[i].menuItem.price;
         }
     }
 
+    std::cout << "Cumulative Total: $" << cumulativeSum << "\n";
 }
-// Function to print the sum of prices starting from a particular date (inclusive)
-void PrintPriceFromDate() {
-    string inputDate;
-    cout << "Enter the date (in format DD.MM.YYYY): ";
-    cin >> inputDate;
 
-    inputDate = trim(inputDate);  // Trim any extra spaces from the input date
 
-    bool foundDate = false;
 
-    // Loop through all the dates to check if the input date exists
-    for (int i = 0; i < dateCount; ++i) {
-        if (dates[i] == inputDate) {
-            foundDate = true;
 
-            // Print sums starting from the input date (inclusive)
-            cout << "Sums from " << inputDate << " onwards:\n";
-            for (int j = i; j < dateCount; ++j) {
-                cout << "Date: " << dates[j] << " - Total Price: $" << priceSum[j] << "\n";
-            }
-            break;
-        }
-    }
-
-    if (!foundDate) {
-        cout << "No orders found for the date " << inputDate << ".\n";
-    }
-}
